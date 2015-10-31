@@ -3,7 +3,17 @@ __author__ = 'Tim Schughart'
 import socket
 import argparse
 import base64
+import signal
+import threading
 
+
+def signal_handler(signal, frame):
+    print("Ctrl + C recognized, exiting")
+    s.close()
+    exit(0)
+
+def commander(command, s): #TODO Multithreading of command execution
+    pass
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--target", action="store", dest="target", help="Specifies target ip address", nargs=1, type=str)
@@ -38,3 +48,5 @@ while True:
     s.send(command)
     response = base64.b64decode(s.recv(1024))
     print(response)
+#    t1 = threading.Thread(target=commander, args=(command, s)) TODO Implemnting function of command mutli Threading
+#    t1.start
