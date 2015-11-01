@@ -36,17 +36,21 @@ except Exception as e:
     exit(1)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try :
+    try:
+        s.connect((target, port))
+    except Exception as e:
+        print("Could not connect to target - maby firewall blocking our request?")
+        exit(1)
 
-try:
-    s.connect((target, port))
-except Exception as e:
-    print("Could not connect to target - maby firewall blocking our request?")
-    exit(1)
-
-while True:
-    command = base64.b64encode(input('> ').encode('ASCII'))
-    s.send(command)
-    response = base64.b64decode(s.recv(1024))
-    print(response)
-#    t1 = threading.Thread(target=commander, args=(command, s)) TODO Implemnting function of command mutli Threading
-#    t1.start
+    while True:
+        command = bytes(input('> '), "UTF-8")
+        s.send(command)
+        response = s.recv(4096).decode("UTF-8")
+        print(response)
+    #    t1 = threading.Thread(target=commander, args=(command, s)) TODO Implemnting function of command mutli Threading
+    #    t1.start
+except:
+    s.close()
+finally:
+    s.close()
